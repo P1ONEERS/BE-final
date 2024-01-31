@@ -1,4 +1,4 @@
-package com.example.splitbill.entity;
+package com.example.jwtProject.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 

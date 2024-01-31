@@ -1,4 +1,4 @@
-package com.example.splitbill.entity;
+package com.example.jwtProject.model;
 
 import lombok.Data;
 

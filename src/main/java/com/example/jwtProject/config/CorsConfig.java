@@ -1,5 +1,5 @@
 // CorsConfig.java
-package com.example.splitbill.config;
+package com.example.jwtProject.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

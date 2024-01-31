@@ -1,8 +1,6 @@
-package com.example.splitbill.service;
-import com.example.splitbill.entity.LineItem;
-import com.example.splitbill.entity.Ocr;
-import com.example.splitbill.repository.OcrRepository;
-import java.util.stream.Collectors;
+package com.example.jwtProject.service;
+import com.example.jwtProject.model.Ocr;
+import com.example.jwtProject.repository.OcrRepository;
 
 
 import lombok.RequiredArgsConstructor;
