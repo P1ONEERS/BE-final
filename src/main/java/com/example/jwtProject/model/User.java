@@ -27,6 +27,14 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    private Double balance;
+    @Column(nullable = false)
+    private String accountType;
+    @Column(nullable = false)
+    private String accountNumber;
+    @Column(nullable = false)
+    private String transactionCode;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
