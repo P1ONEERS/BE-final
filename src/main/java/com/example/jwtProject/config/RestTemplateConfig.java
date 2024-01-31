@@ -1,5 +1,5 @@
 // src/main/java/com/example/notificationbill/config/RestTemplateConfig.java
-package com.example.splitbill.config;
+package com.example.jwtProject.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
