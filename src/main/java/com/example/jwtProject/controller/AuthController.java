@@ -20,25 +20,28 @@ public class AuthController {
 
     // Build Login REST API
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto){
-        String token = authService.login(loginDto);
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
 
-        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-        jwtAuthResponse.setAccessToken(token);
+        // Call the authService.login method, expecting a JwtAuthResponse
+        JwtAuthResponse jwtAuthResponse = authService.login(loginDto);
 
+        // Directly return the JwtAuthResponse object
         return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegistrationDto registrationDto) {
         try {
-            String token = authService.register(registrationDto);
-            String response = "Registration successful. Your access token is: " + token;
+            authService.register(registrationDto);
+            String response = "Registration successful";
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }catch (Exception e) {
             return new ResponseEntity<>("Registration failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
+
 
 
 }

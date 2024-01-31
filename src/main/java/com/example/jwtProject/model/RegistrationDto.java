@@ -14,6 +14,10 @@ public class RegistrationDto {
     private String username;
     private String email;
     private String password;
+    private Double balance;
+    private String accountType;
+    private String accountNumber;
+    private String transactionCode;
 
 }
 

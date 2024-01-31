@@ -12,5 +12,8 @@ import lombok.Setter;
 public class JwtAuthResponse {
     private String accessToken;
     private String tokenType = "Bearer";
-    private String successMessage;
+    private String name;
+    private Double balance;
+    private String accountType;
+    private String accountNumber;;
 }
