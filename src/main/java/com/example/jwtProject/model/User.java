@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
-
 @Setter
 @Getter
 @NoArgsConstructor
@@ -20,26 +19,32 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false, unique = true)
+
+
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
-    @Column(nullable = false, unique = true)
+
+    @Column(name= "email", nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
-    private String password;
-    @Column(nullable = false)
+
+    @Column(name = "mpin", nullable = false)
+    private String mpin;
+
+    @Column(name = "balance",nullable = false)
     private Double balance;
-    @Column(nullable = false)
+
+    @Column(name = "account_type", nullable = false)
     private String accountType;
-    @Column(nullable = false)
+
+    @Column(name = "account_number", nullable = false)
     private String accountNumber;
-    @Column(nullable = false)
+
+    @Column(name = "transaction_code", nullable = false)
     private String transactionCode;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    private Set<Role> roles;
+    @Column(name = "notification_enabled", columnDefinition = "boolean default false")
+    private boolean notificationEnabled;
 }

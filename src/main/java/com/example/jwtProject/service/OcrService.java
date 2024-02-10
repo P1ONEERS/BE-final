@@ -1,7 +1,11 @@
 package com.example.jwtProject.service;
-import com.example.jwtProject.model.Ocr;
 import com.example.jwtProject.repository.OcrRepository;
 
+import com.example.jwtProject.entity.LineItem;
+
+import java.util.stream.Collectors;
+
+import com.example.jwtProject.entity.Ocr;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
