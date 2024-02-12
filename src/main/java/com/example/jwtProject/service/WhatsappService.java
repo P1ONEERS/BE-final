@@ -39,7 +39,7 @@ public class WhatsappService {
     private String whatsappApiToken;
 
     private final TemanService temanService;
-
+    private String totalAmount;
 
 
 //    @Transactional
@@ -195,9 +195,17 @@ public class WhatsappService {
         }
     }
 
-
+    private String calculateTotalAmount(List<Item> items) {
+        double totalAmount = 0;
+        for (Item item : items) {
+            totalAmount += item.getPrice() * item.getQuantity();
+        }
+        // Menggunakan format string untuk menghilangkan desimal .0
+        return String.format("%.0f", totalAmount);
+    }
 
     private String buildJsonPayload(Teman user, List<Item> itemsToSend, String totalAmount, SplitBill splitBill) {
+        this.totalAmount = totalAmount;
         StringBuilder jsonPayload = new StringBuilder("{\n" +
                 "    \"messaging_product\": \"whatsapp\",\n" +
                 "    \"recipient_type\": \"individual\",\n" +
@@ -240,12 +248,5 @@ public class WhatsappService {
 
 
 
-    private String calculateTotalAmount(List<Item> items) {
-        double totalAmount = 0;
-        for (Item item : items) {
-            totalAmount += item.getPrice() * item.getQuantity();
-        }
-        // Menggunakan format string untuk menghilangkan desimal .0
-        return String.format("%.0f", totalAmount);
-    }
+
 }

@@ -36,8 +36,8 @@ public class NotificationAfterBillService {
 
 
     // NotificationAfterBillService
-// NotificationAfterBillService
-    public ResponseEntity<String> runScriptAfterBill(Long userId) {
+    public ResponseEntity<String> runScriptAfterBill(Long userId, String authorizationHeader) {
+        System.out.println("authorizationHeader: " + authorizationHeader);
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isPresent()) {
@@ -53,7 +53,7 @@ public class NotificationAfterBillService {
 
                 if (latestPaidBillOptional.isPresent()) {
                     Bill latestPaidBill = latestPaidBillOptional.get();
-                    String output = executeNotificationScriptForUser(user, latestPaidBill.getDueDateString());
+                    String output = executeNotificationScriptForUser(user, latestPaidBill.getDueDateString(), authorizationHeader);
 
                     System.out.println("Script Output: " + output);
                     LocalDateTime predictedReminderDateTime = parseDateTimeString(output.trim());
@@ -74,8 +74,9 @@ public class NotificationAfterBillService {
         }
     }
 
-    private String executeNotificationScriptForUser(User user, String dueDateString) throws IOException, InterruptedException {
-        List<String> command = Arrays.asList("python3", "notification_script.py", user.getUsername(), dueDateString);
+    private String executeNotificationScriptForUser(User user, String dueDateString, String authorizationHeader) throws IOException, InterruptedException {
+        List<String> command = Arrays.asList("python3", "notification_script.py", user.getUsername(), dueDateString, authorizationHeader);
+
         return executeNotificationScript(command);
     }
 

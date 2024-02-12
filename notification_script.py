@@ -4,18 +4,18 @@ from sklearn.linear_model import LinearRegression
 import requests
 import calendar
 import traceback
+import sys
 
 app_url = "http://localhost:8080"
-jwt_token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbmRyYXB1cm5heWFzYSIsImlhdCI6MTcwNzI3MzcwNSwiZXhwIjoxNzA3ODc4NTA1fQ.mLw4YWP4BX5rwfdJK4ysCxKzSAaDQJEEeIbLwp11L3jL1fUuB0v4Y172SOrki3uR"
 
 def get_payment_dates(jwt_token):
     try:
-        headers = {"Authorization": f"Bearer {jwt_token}"}
+        headers = {"Authorization": f"{jwt_token}"}
         response = requests.get(f"{app_url}/api/bills", headers=headers)
         response.raise_for_status()
+
         payment_data = response.json()
 
-        # Ensure that the 'dueDate' field is processed correctly
         payment_dates = []
         for date in payment_data:
             try:
@@ -27,12 +27,10 @@ def get_payment_dates(jwt_token):
                     payment_dates.append(datetime.datetime.strptime(date['dueDate'], '%Y-%m-%d'))
             except ValueError as ve:
                 print(f"Error parsing date: {ve} - Skipping date: {date['dueDate']}")
-
         return payment_dates
     except requests.exceptions.RequestException:
         print("Error fetching payment dates")
         return []
-
     except requests.exceptions.HTTPError as errh:
         print(f"HTTP Error: {errh}")
         print(f"Response content: {response.content.decode('utf-8')}")
@@ -49,6 +47,7 @@ def get_payment_dates(jwt_token):
     except Exception as e:
         print(f"Unexpected Error: {e}")
         return []
+
 
 
 def generate_optimal_reminder_date(payment_dates):
@@ -97,11 +96,19 @@ def generate_optimal_reminder_date(payment_dates):
         print(f"Error in script output: {e}")
 
 if __name__ == '__main__':
+    if len(sys.argv) < 4:
+        print("Usage: python3 notification_script.py <username> <due_date_string> <authorization_header>")
+        sys.exit(1)
+
+    username = sys.argv[1]
+    due_date_string = sys.argv[2]
+    authorization_header = sys.argv[3]
+
+
     try:
-        jwt_token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJpbmRyYXB1cm5heWFzYSIsImlhdCI6MTcwNzI3MzcwNSwiZXhwIjoxNzA3ODc4NTA1fQ.mLw4YWP4BX5rwfdJK4ysCxKzSAaDQJEEeIbLwp11L3jL1fUuB0v4Y172SOrki3uR"
-        payment_dates = get_payment_dates(jwt_token)
-        generate_optimal_reminder_date(payment_dates)
-    except SomeException as e:
+        payment_dates = get_payment_dates(authorization_header)  # Pass authorization header to get_payment_dates
+        if payment_dates:
+            generate_optimal_reminder_date(payment_dates)
+    except Exception as e:
         print(f"Error: {e}")
-    except AnotherException as ae:
-        print(f"Another error: {ae}")
+

@@ -40,21 +40,26 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/run-script")
-    public ResponseEntity<String> runScriptForUser(@PathVariable Long userId) {
-        return notificationService.runScriptForUser(userId);
-    }
-
-    @PostMapping("/{userId}/run-script-after-bill")
-    public ResponseEntity<String> runScriptAfterBill(@PathVariable Long userId) {
-        ResponseEntity<String> response = notificationAfterBillService.runScriptAfterBill(userId);
-
-        // Memeriksa jika notifikasi dinonaktifkan dan mengembalikan pesan yang sesuai
+    public ResponseEntity<String> runScriptForUser(@PathVariable Long userId, @RequestHeader("Authorization") String authorizationHeader) {
+        ResponseEntity<String> response = notificationService.runScriptForUser(userId, authorizationHeader);
         if (response.getBody().equals("Notification disabled. No script executed.")) {
-            return ResponseEntity.ok("Notification disabled. No script executed.");
+            return ResponseEntity.ok().body(response.getBody());
         } else {
             return response;
         }
     }
+
+    @PostMapping("/{userId}/run-script-after-bill")
+    public ResponseEntity<String> runScriptAfterBill(@PathVariable Long userId, @RequestHeader("Authorization") String authorizationHeader) {
+
+        ResponseEntity<String> response = notificationAfterBillService.runScriptAfterBill(userId, authorizationHeader);
+        if (response.getBody().equals("Notification disabled. No script executed.")) {
+            return ResponseEntity.ok().body(response.getBody());
+        } else {
+            return response;
+        }
+    }
+
 
     @PostMapping("/{userId}/cancel-notification") // samain pathvariable nya menjadi username
     public ResponseEntity<String> cancelNotification(@PathVariable Long userId) {

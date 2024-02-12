@@ -34,14 +34,15 @@ public class NotificationService {
         this.billRepository = billRepository;
     }
 
-    public ResponseEntity<String> runScriptForUser(Long userId) {
+    public ResponseEntity<String> runScriptForUser(Long userId, String authorizationHeader) {
+        System.out.println("authorizationHeader: " + authorizationHeader);
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
             try {
-                LocalDateTime predictedReminderDateTime = executeNotificationScriptForUser(user);
+                LocalDateTime predictedReminderDateTime = executeNotificationScriptForUser(user, authorizationHeader);
 
                 // Set notificationEnabled to true
                 user.setNotificationEnabled(true);
@@ -80,8 +81,9 @@ public class NotificationService {
     }
 
 
-    private LocalDateTime executeNotificationScriptForUser(User user) throws IOException, InterruptedException {
-        List<String> command = Arrays.asList("python3", "notification_script.py", user.getUsername());
+    private LocalDateTime executeNotificationScriptForUser(User user, String authorizationHeader) throws IOException, InterruptedException {
+        List<String> command = Arrays.asList("python3", "notification_script.py", user.getUsername(), "", authorizationHeader);
+        System.out.println("bearer ===="+ authorizationHeader);
         String output = executeNotificationScript(command);
 
         // Using the method parseDateTimeString instead of getDueDateString
