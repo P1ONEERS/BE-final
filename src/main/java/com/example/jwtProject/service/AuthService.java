@@ -80,6 +80,7 @@ public class AuthService {
             user.setAccountType(registrationDto.getAccountType());
             user.setAccountNumber(registrationDto.getAccountNumber());
             user.setTransactionCode(passwordEncoder.encode(registrationDto.getTransactionCode()));
+            user.setNoTelp(registrationDto.getNoTelp());
 
 
             userRepository.save(user);

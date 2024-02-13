@@ -18,7 +18,7 @@ public class WhatsappScheduler {
         this.whatsappNotificationService = whatsappNotificationService;
     }
 
-    @Scheduled(cron = "0 48 13 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 58 14 * * *", zone = "Asia/Jakarta")
     public void checkAndSendWhatsappMessage() {
         try {
             logger.info("Scheduled task started.");

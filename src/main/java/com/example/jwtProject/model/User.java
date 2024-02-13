@@ -47,4 +47,7 @@ public class User {
 
     @Column(name = "notification_enabled", columnDefinition = "boolean default false")
     private boolean notificationEnabled;
+
+    @Column(name = "no_telp", nullable = false)
+    private String noTelp;
 }

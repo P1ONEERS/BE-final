@@ -17,5 +17,6 @@ public class RegistrationDto {
     private String accountType;
     private String accountNumber;
     private String transactionCode;
+    private String noTelp;
 }
 

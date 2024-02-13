@@ -99,7 +99,7 @@ public class WhatsappNotificationService {
         String jsonPayload = "{\n" +
                 "    \"messaging_product\": \"whatsapp\",\n" +
                 "    \"recipient_type\": \"individual\",\n" +
-                "    \"to\": \"whatsapp:+6281331949599\",\n" +
+                "    \"to\": \"whatsapp: " + predictedReminderDate.getUser().getNoTelp() + "\",\n" +
                 "    \"type\": \"text\",\n" +
                 "    \"text\": {\n" +
                 "        \"preview_url\": false,\n" +
