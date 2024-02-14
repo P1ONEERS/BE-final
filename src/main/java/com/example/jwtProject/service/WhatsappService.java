@@ -1,9 +1,6 @@
 package com.example.jwtProject.service;
 
-import com.example.jwtProject.model.SplitBill;
-import com.example.jwtProject.model.Item;
-import com.example.jwtProject.model.Total;
-import com.example.jwtProject.model.Teman;
+import com.example.jwtProject.model.*;
 import com.example.jwtProject.repository.BillRepository;
 import com.example.jwtProject.repository.SplitBillRepository;
 import com.example.jwtProject.repository.TotalRepository;
@@ -39,7 +36,6 @@ public class WhatsappService {
     private String whatsappApiToken;
 
     private final TemanService temanService;
-    private String totalAmount;
 
 
 //    @Transactional
@@ -123,17 +119,17 @@ public class WhatsappService {
     @Transactional
     public void sendWhatsAppMessage(Long userId) {
         // Use UserService to retrieve user information
-        Teman user = temanService.getUsersByIdWithItems(userId);
+        Teman teman = temanService.getUsersByIdWithItems(userId);
 
-        if (user != null) {
+        if (teman != null) {
             HttpHeaders headers = new HttpHeaders();
-            System.out.println("User Object: " + user.toString());
+            System.out.println("User Object: " + teman.toString());
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(whatsappApiToken);
 
             // Calculate the total amount
             // Mengonversi Set<Item> menjadi List<Item>
-            List<Item> itemList = new ArrayList<>(user.getItems());
+            List<Item> itemList = new ArrayList<>(teman.getItems());
 
             // Add user's items, prices, and quantities to the JSON payload
             // Menggunakan List<Item> itemList yang sudah diambil sebelumnya
@@ -146,9 +142,8 @@ public class WhatsappService {
             // Save Bill object (initially with grand_total set to 0.0)
             splitBill = splitBillRepository.save(splitBill);
 
-            // Save items and totals directly
+            // Save items directly without using Total object
             double grand_total = 0.0;
-            List<Total> totals = new ArrayList<>();
             for (Item item : itemsToSend) {
                 double totalPrice = item.getPrice() * item.getQuantity();
 
@@ -163,15 +158,16 @@ public class WhatsappService {
                 total.setBill(splitBill);
                 grand_total += totalPrice;
                 totalRepository.save(total);
-                totals.add(total);
             }
 
             // Update grand_total in Bill
             splitBill.setGrand_total(grand_total);
-            splitBillRepository.save(splitBill);
+
+            // Save the updated Bill object
+            splitBill = splitBillRepository.save(splitBill);
 
             // Build JSON payload
-            String jsonPayload = buildJsonPayload(user, itemsToSend, String.valueOf(grand_total), splitBill);
+            String jsonPayload = buildJsonPayload(teman, itemsToSend, String.valueOf(grand_total), splitBill);
 
             HttpEntity<String> entity = new HttpEntity<>(jsonPayload, headers);
 
@@ -195,27 +191,20 @@ public class WhatsappService {
         }
     }
 
-    private String calculateTotalAmount(List<Item> items) {
-        double totalAmount = 0;
-        for (Item item : items) {
-            totalAmount += item.getPrice() * item.getQuantity();
-        }
-        // Menggunakan format string untuk menghilangkan desimal .0
-        return String.format("%.0f", totalAmount);
-    }
 
-    private String buildJsonPayload(Teman user, List<Item> itemsToSend, String totalAmount, SplitBill splitBill) {
-        this.totalAmount = totalAmount;
+
+
+    private String buildJsonPayload(Teman teman, List<Item> itemsToSend, String totalAmount, SplitBill splitBill) {
         StringBuilder jsonPayload = new StringBuilder("{\n" +
                 "    \"messaging_product\": \"whatsapp\",\n" +
                 "    \"recipient_type\": \"individual\",\n" +
-                "    \"to\": \"whatsapp: " + user.getNoTelp() + "\",\n" +
+                "    \"to\": \"whatsapp: " + teman.getNoTelp() + "\",\n" +
                 "    \"type\": \"text\",\n" +
                 "    \"text\": {\n" +
                 "        \"preview_url\": true,\n" +
-                "        \"body\": \"Halo " + user.getName() + "!\\n" + "\\n" +
+                "        \"body\": \"Halo " + teman.getName() + "!\\n" + "\\n" +
                 "Ada bill yang belum kamu bayar nih !" + "\\n" + "Kamu mendapat tagihan sebesar" + "\\n" + " -- Rp. " + totalAmount + " -- " + "\\n"
-                + "\\n" + "Ayo bayar disini" + "\\n" + "bit.ly/gamenakal" + "\\n" + "\\n" + "Rincian:\\n");
+                + "\\n" + "Ayo bayar disini" + "\\n" + "bit.ly/pembayaran_sharing_bill" + "\\n" + "\\n" + "Rincian:\\n");
 
         for (Item item : itemsToSend) {
             // Format harga dan total tanpa angka desimal .0
@@ -248,5 +237,12 @@ public class WhatsappService {
 
 
 
-
+    private String calculateTotalAmount(List<Item> items) {
+        double totalAmount = 0;
+        for (Item item : items) {
+            totalAmount += item.getPrice() * item.getQuantity();
+        }
+        // Menggunakan format string untuk menghilangkan desimal .0
+        return String.format("%.0f", totalAmount);
+    }
 }

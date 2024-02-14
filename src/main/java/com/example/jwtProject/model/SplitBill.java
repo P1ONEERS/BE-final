@@ -16,22 +16,39 @@ public class SplitBill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_trans")
     private Long id_trans;
-//    private Long id_total;
 
-    @Column(name = "grand_total")
     private Double grand_total;
-//
+
+    @ManyToOne
+    @JoinColumn(name = "id_riwayatbill")
+    @JsonIgnoreProperties("bills")
+    private RiwayatBill riwayatBill;
+
+
     @OneToMany(mappedBy = "splitBill", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("splitBill")
     private List<Total> totals = new ArrayList<>();
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_user")
-//    private Users user;
+
+
+
 
     public SplitBill(){
 
     }
+
+
+    public Long getIdRiwayatBill() {
+        return (riwayatBill != null) ? riwayatBill.getIdRiwayatBill() : null;
+    }
+
+    public void setIdRiwayatBill(Long idRiwayatBill) {
+        if (riwayatBill == null) {
+            riwayatBill = new RiwayatBill();
+        }
+        riwayatBill.setIdRiwayatBill(idRiwayatBill);
+    }
+
 
     public Long getId_trans() {
         return id_trans;
@@ -42,21 +59,6 @@ public class SplitBill {
     }
 
 
-//    public Long getId_total() {
-//        return id_total;
-//    }
-//
-//    public void setId_total(Long id_total) {
-//        this.id_total = id_total;
-//    }
-//
-//    public Total getTotal() {
-//        return total;
-//    }
-
-//    public void setTotals(Total total) {
-//        this.total = total;
-//    }
 
     public List<Total> getTotals() {
         return totals;
@@ -74,9 +76,15 @@ public class SplitBill {
         this.grand_total = grand_total;
     }
 
+    //get set
 
 
+    public RiwayatBill getRiwayatBill() {
+        return riwayatBill;
+    }
 
-
+    public void setRiwayatBill(RiwayatBill riwayatBill) {
+        this.riwayatBill = riwayatBill;
+    }
 }
 
